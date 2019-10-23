@@ -1,4 +1,21 @@
 var socket = io("https://gps-250305.appspot.com/")
+const firebaseConfig = {
+  apiKey: "AIzaSyAidoHWEKS204WLVrLxuKyqPsUELJ2Fsxc",
+  authDomain: "mirrored-duet.firebaseapp.com",
+  databaseURL: "https://mirrored-duet.firebaseio.com",
+  projectId: "mirrored-duet",
+  storageBucket: "mirrored-duet.appspot.com",
+  messagingSenderId: "66492553880",
+  appId: "1:66492553880:web:09b2968bd72a0ca2048eed",
+  measurementId: "G-P35NZRFX0J"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const databaseRef = firebase.database().ref();
+const matsuRef = databaseRef.child('matsu');
+// console.log(matsuRef);
+//matsuRef.set({test:1});
+// console.log('psu!');
 
 if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
 
@@ -38,9 +55,18 @@ var vm = new Vue({
     ],
     nowModeId: 1,
     noteNames: "C,D,E,F#,G,A,B,C,D,E".split(","),
-    accdata: {gamma: 0, beta: 0, alpha: 0}
+    accdata: {gamma: 0, beta: 0, alpha: 0},
+    rhythmRef: null,
+    noteNum: 0,
+    prevStamp: -1
   },
   mounted() {
+
+    if (!this.rhythmRef) { // push a entry
+      let firebaseID = matsuRef.push().key;
+      console.log(firebaseID);
+      this.rhythmRef = matsuRef.child(firebaseID);
+    }
     
     socket.on("allMessage",(obj)=>{
       this.messages=obj
@@ -110,8 +136,21 @@ var vm = new Vue({
       socket.emit("hit2")
       
     },
+    sendNote(noteId) {
+      //do firebasething
+      if (!this.rhythmRef) { // push a entry
+        let firebaseID = matsuRef.push().key;
+        this.rhythmRef = matsuRef.child(firebaseID);
+      }
+      this.rhythmRef.child(this.noteNum).set({
+        note: noteId,
+        delay: this.prevStamp == -1 ? 0 : Date.now() - this.prevStamp
+      });
+      this.noteNum++;
+      this.prevStamp = Date.now();
+      this.sendOsc("/note", noteId);
+    },
     sendOsc(address,message){
-      console.log(address, message);
       socket.emit("osc",{
         address: address,
         args: [

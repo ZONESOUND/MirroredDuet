@@ -39,16 +39,20 @@
     <div class="row mt-5 keyboard" v-if="nowModeId==1" :key="2">
       <div class="fadeIn animated" v-for="i in 10" :class="'ani-delay-'+i*4">
         <div class="block small">
-          <div class="content" @click="sendOsc('/note',i)" :data-note-id="i"> <span class="text">{{ noteNames[i-1] }}  </span></div>
+          <div class="content" @click="sendNote(i)" :data-note-id="i"> <span class="text">{{ noteNames[i-1] }}  </span></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 <!-- partial -->
+<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script><script  src="./script.js"></script>
+<!-- <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script> -->
 
 </body>
 </html>
