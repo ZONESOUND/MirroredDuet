@@ -1,4 +1,4 @@
-var socket = io("https://gps-250305.appspot.com/")
+var socket = io("https://second-server-dot-gps-250305.appspot.com")
 const firebaseConfig = {
   apiKey: "AIzaSyAidoHWEKS204WLVrLxuKyqPsUELJ2Fsxc",
   authDomain: "mirrored-duet.firebaseapp.com",
